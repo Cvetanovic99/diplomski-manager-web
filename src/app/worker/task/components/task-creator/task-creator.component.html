@@ -1,0 +1,230 @@
+<ion-content [fullscreen]="true">
+
+  <form [formGroup]="editorForm" (ngSubmit)="onSubmit()" *ngIf="editorFormActive">
+
+      <swiper  style="min-height: 500px;" #swiper [config]="config">
+
+        <!-- PRODUCT PICK ------------------------------------------------------------------------------------------>
+        <ng-template swiperSlide >
+          <app-product-swiper
+            [isUpdate]="isUpdate"
+            [warehouseId] = "warehouseId"
+            [isProductPicked]="isProductPicked"
+            [productsSwiper]="productsSwiper"
+            (productEmmiter)="onProductPicked($event)"
+            (doneWithChangesEmmiter)="redirectSliderTo(5)"
+            (dismissEmmiter)="this.dismiss()"
+
+          ></app-product-swiper>
+        </ng-template>
+
+        <!-- PRODUCT HAVE SN --------------------------------------------------------------------------------------->
+        <ng-template  swiperSlide>
+          <app-sncodes-swiper
+            *ngIf="pickedProduct && pickedProduct.hasSN && warehouseId"
+            [isUpdate]="isUpdate"
+            [warehouseId] = "warehouseId"
+            [productId]   = "pickedProduct.id"
+            [isProductWithSN]="isProductWithSN"
+            [productsSwiper]="productsSwiper"
+            (productSNCodeEmmiter)="onPickSNCode($event)"
+            (doneWithChangesEmmiter)="redirectSliderTo(this.swiper.swiperRef.slides.length - 1)"
+            (dismissEmmiter)="this.dismiss()"
+            (slideToPreviousEmmiter)="prev()"
+          ></app-sncodes-swiper>
+        </ng-template>
+
+        <!-- PRODUCT DONT HAVE SN ------------------------------------------------------------------------------------>
+        <ng-template   swiperSlide>
+
+          <ion-header>
+            <ion-toolbar>
+              <ion-icon  name="arrow-back-outline" slot="start" size="large" class="pointer ion-padding-start" (click)="prev()"></ion-icon>
+
+              <ion-title class="ion-text-center ion-margin-vertical">
+                Dodaj količinu proizvoda
+              </ion-title>
+              <ion-icon size="large" class="ion-padding pointer" slot="end" (click)="dismiss()" name="close-outline"></ion-icon>
+            </ion-toolbar>
+          </ion-header>
+
+          <ion-grid>
+
+            <ion-row class="ion-justify-content-end">
+              <ion-col  *ngIf="pickedProduct && !pickedProduct.hasSN && isProuductQuantityAdded"  sizeXl="5">
+                <ion-button [disabled]="editorForm.controls.quantityUsed.invalid" (click)="redirectSliderTo(this.swiper.swiperRef.slides.length - 1)" size="default" color="light">Zavrsi sa izmenama</ion-button>
+              </ion-col>
+              <ion-col sizeXl="5">
+                <ion-button color="primary" size="default" [disabled]="editorForm.controls.quantityUsed.invalid" (click)="onPickQuantity()">
+                  Dodaj proizvod
+                  <ion-icon name="chevron-forward-outline"></ion-icon>
+                </ion-button>
+              </ion-col>
+            </ion-row>
+
+            <ion-row class="ion-padding-start">
+              <ion-col sizeXl="10">
+                <ion-label>Količina u magacinu: {{pickedProductQuantity}}</ion-label>
+              </ion-col>
+            </ion-row>
+
+            <ion-row class="ion-justify-content-center">
+              <ion-col sizeXl="12">
+                <ion-item >
+                  <ion-label position="floating" for="quantityUsed">Iskorišćena količina</ion-label>
+                  <ion-input min="1"  id="quantityUsed" formControlName="quantityUsed" type="number"></ion-input>
+                </ion-item>
+                <div *ngIf="editorForm.controls.quantityUsed.invalid && editorForm.controls.quantityUsed.errors?.min">
+                  <ion-label color="danger">Minimalna količina proizvoda je 1</ion-label>
+                </div>
+                <div *ngIf="editorForm.controls.quantityUsed.invalid && editorForm.controls.quantityUsed.errors?.max">
+                  <ion-label color="danger">Prekoračili ste količinu</ion-label>
+                </div>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+
+        </ng-template>
+
+        <!-- RETURN TO PRODUCT PICK OR ADD COWORKER------------------------------------------------------------------>
+        <ng-template swiperSlide>
+
+          <ion-header>
+            <ion-toolbar>
+              <ion-title class="ion-text-center ion-margin-vertical">
+                  Dodaj novi proizvod ili završi sa izmenama
+              </ion-title>
+              <ion-icon size="large" class="ion-padding pointer" slot="end" (click)="dismiss()" name="close-outline"></ion-icon>
+            </ion-toolbar>
+          </ion-header>
+
+          <ion-grid>
+            <ion-row class="ion-justify-center">
+              <ion-col sizeXl="8" class="ion-padding-start">
+                <ion-button (click)="redirectToFirstPage()"
+
+                  size="default">
+                  <ion-icon name="chevron-back-outline"></ion-icon>
+                  Dodaj novi proizvod
+                </ion-button>
+              </ion-col>
+
+              <ion-col sizeXl="4">
+                <ion-button [disabled]="this.products.length===0" (click)="next()" size="default">
+                  Dodaj kolegu
+                  <ion-icon name="chevron-forward-outline"></ion-icon>
+                </ion-button>
+              </ion-col>
+            </ion-row>
+
+
+
+          </ion-grid>
+
+          <ion-item *ngIf="this.products.length===0" class="ion-text-center" lines="none">
+            <ion-title>Niste dodali ni jedan proizvod!</ion-title>
+          </ion-item>
+
+            <ion-list>
+              <ng-container *ngFor="let productForm of products.controls; let i = index" lines="none">
+                  <ion-item lines="none" class="ion-padding-start">
+                    <ion-chip color="primary">{{ i + 1}}</ion-chip>
+                    <ion-label>
+                      {{products.at(i).get('name').value}}
+                      <ng-container *ngIf="products.at(i).get('sn').value" >
+                        <p> SN: {{products.at(i).get('sn').value}}</p>
+                      </ng-container>
+                      <ng-container *ngIf="products.at(i).get('quantityUsed').value">
+                        <p>Iskorišćena količina: {{products.at(i).get('quantityUsed').value}}</p>
+                      </ng-container>
+                    </ion-label>
+                      <ion-icon slot="end" name="close-sharp" class="pointer" (click)="onRemoveProduct(i)"></ion-icon>
+                  </ion-item>
+                <ion-label ></ion-label>
+              </ng-container>
+            </ion-list>
+
+        </ng-template>
+
+        <!-- ADD COWORKER -------------------------------------------------------------------------------------------->
+        <ng-template swiperSlide>
+          <app-user-swiper
+            [isUpdate]="isUpdate"
+            [mainWorkerId] = "mainWorker.id"
+            [isCoworkerPicked]="isCoworkerPicked"
+            (coworkerEmmiter)="onPickCoworker($event)"
+            (doesntHaveCoworkerEmmiter)="onNoCoworker()"
+            (dismissEmmiter)="this.dismiss()"
+            (doneWithChangesEmmiter)="redirectSliderTo(this.swiper.swiperRef.slides.length - 1)"
+            (slideToPreviousEmmiter)="prev()"
+           ></app-user-swiper>
+
+        </ng-template>
+
+         <!-- SUBMIT ------------------------------------------------------------------------------------------------->
+        <ng-template swiperSlide>
+
+          <ion-header>
+            <ion-toolbar>
+              <ion-icon  name="arrow-back-outline" slot="start" size="large" class="pointer ion-padding-start" (click)="prev()"></ion-icon>
+
+              <ion-title class="ion-text-center ion-margin-vertical">
+                Dodaj zadatak
+              </ion-title>
+              <ion-icon size="large" class="ion-padding pointer" slot="end" (click)="dismiss()" name="close-outline"></ion-icon>
+            </ion-toolbar>
+          </ion-header>
+
+          <ion-grid>
+
+            <ion-row class="ion-justify-content-end ion-padding-start">
+              <ion-col  *ngIf="coworker"  sizeXl="6">
+                <p><strong>{{ coworker.name + ' ' + coworker.surname }}</strong></p>
+              </ion-col>
+
+              <ion-col sizeXl="4">
+                <ion-button (click)="redirectSliderTo(4)" color="light" expand="full" >{{coworker ? 'Izmeni radnika' : 'Dodaj radnika'}}</ion-button>
+              </ion-col>
+
+            </ion-row>
+
+            <ion-row  class="ion-justify-content-end ion-padding-start">
+              <ion-col *ngIf="pickedProduct"  sizeXl="6">
+                <p><strong>{{ pickedProduct.name }}</strong></p>
+              </ion-col>
+              <ion-col sizeXl="4">
+                <ion-button (click)="redirectSliderTo(0)" color="light" expand="full">{{pickedProduct ? 'Izmeni proizvod' : 'Dodaj proizvod'}}</ion-button>
+              </ion-col>
+            </ion-row>
+
+            <ion-list>
+              <ng-container *ngFor="let productForm of products.controls; let i = index" lines="none">
+                  <ion-item lines="none" class="ion-padding-start ion-padding-end">
+                    <ion-chip color="primary">{{ i + 1}}</ion-chip>
+                    <ion-label>
+                      {{products.at(i).get('name').value}}
+                      <ng-container *ngIf="products.at(i).get('sn').value" >
+                        <p> SN: {{products.at(i).get('sn').value}}</p>
+                      </ng-container>
+                      <ng-container *ngIf="products.at(i).get('quantityUsed').value">
+                        <p>Iskorišćena količina: {{products.at(i).get('quantityUsed').value}}</p>
+                      </ng-container>
+                    </ion-label>
+                      <ion-icon slot="end" name="close-sharp" class="pointer" (click)="onRemoveProduct(i)"></ion-icon>
+                  </ion-item>
+                <ion-label ></ion-label>
+              </ng-container>
+            </ion-list>
+
+            <ion-row class="ion-justify-content-center ion-margin-vertical">
+              <ion-button [disabled]="products.length===0"  type="submit" color="primary" >Dodaj</ion-button>
+            </ion-row>
+
+          </ion-grid>
+        </ng-template>
+
+      </swiper>
+
+  </form>
+
+</ion-content>

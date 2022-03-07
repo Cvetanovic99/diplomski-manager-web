@@ -1,0 +1,67 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title class="ion-text-center ion-margin-vertical">
+      {{ (isUpdate ? 'Izmeni' : 'Dodaj') }} proizvod
+    </ion-title>
+    <ion-icon size="large" class="ion-padding pointer" slot="end" (click)="dismiss()" name="close-outline"></ion-icon>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" style="height: 400px;" >
+
+  <form>
+    <ion-grid>
+
+      <ion-row class="ion-justify-content-end">
+
+        <ion-col  *ngIf=" productsSwiper.length > 0 || isProductPicked "  sizeXl="5">
+          <ion-button (click)="doneWithChanges()" size="default" color="light">Zavrsi sa izmenama</ion-button>
+        </ion-col>
+      </ion-row>
+
+      <ion-row *ngIf="filter">
+        <ion-col>
+          <ion-item>
+            <ion-input [formControl]="filter" placeholder="Dodaj proizvod..."></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+
+      <ng-container *ngIf="!loading && pickerPaginationConfig.total !== undefined && pickerPaginationConfig.total > 0">
+
+        <ion-item *ngFor="let product of products" [disabled]="checkIfProductIsPickedBefore(product)" button (click)="addProduct(product)">
+          <ion-label> {{ product.name }} </ion-label>
+        </ion-item>
+
+        <ion-row>
+          <ion-col class="ion-text-center">
+            <ion-icon name="chevron-back-outline" class="pointer ion-padding" *ngIf="pickerPaginationConfig.pageIndex > 0" (click)="changePage(false)">
+
+            </ion-icon>
+            <ion-icon
+              *ngIf="pickerPaginationConfig.total / (pickerPaginationConfig.pageIndex + 1) > pickerPaginationConfig.pageSize"
+              (click)="changePage(true)"
+              name="chevron-forward-outline"
+              class="pointer ion-padding"></ion-icon>
+          </ion-col>
+        </ion-row>
+
+      </ng-container>
+
+      <ion-row *ngIf="loading">
+        <ion-col>
+          <ion-spinner  color="primary"></ion-spinner>
+        </ion-col>
+      </ion-row>
+
+      <ion-row *ngIf="!loading && pickerPaginationConfig !== undefined && pickerPaginationConfig.total === 0">
+        <ion-col>
+          <ion-item>
+            <ion-label>Ne postoji!</ion-label>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+
+     </ion-grid>
+  </form>
+</ion-content>

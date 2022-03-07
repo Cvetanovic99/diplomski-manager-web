@@ -1,0 +1,74 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title class="ion-text-center ion-margin-vertical">
+        {{ (project ? 'Izmeni' : 'Dodaj') }} projekat
+    </ion-title>
+    <ion-icon size="large" class="ion-padding pointer" slot="end" (click)="dismiss()" name="close-outline"></ion-icon>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+
+
+  <form [formGroup]="editorForm" (ngSubmit)="onSubmit()" *ngIf="editorFormActive">
+
+    <ion-grid>
+
+      <ion-row class="ion-justify-content-center">
+        <ion-col sizeXl="10">
+          <ion-item>
+            <ion-label position="floating" for="title">Naziv projekta</ion-label>
+            <ion-input id="title" formControlName="title"></ion-input>
+          </ion-item>
+          <div *ngIf="editorForm.controls.title.invalid && submitted">
+            <ion-label color="danger">Potrebno je uneti naziv projekta</ion-label>
+          </div>
+        </ion-col>
+      </ion-row>
+
+      <ion-row class="ion-justify-content-center" *ngIf="project">
+        <ion-col sizeXl="10">
+          <ion-item>
+            <ion-label>Stanje</ion-label>
+            <ion-select interface="popover" formControlName="state">
+              <ion-select-option value="Realizovan">Realizovan</ion-select-option>
+              <ion-select-option value="Odložen">Odložen</ion-select-option>
+              <ion-select-option value="U procesu">U procesu</ion-select-option>
+              <ion-select-option value="Odustao">Odustao</ion-select-option>
+              <ion-select-option value="Nije završen">Nije završen</ion-select-option>
+            </ion-select>
+          </ion-item>
+          <div *ngIf="editorForm.controls.state.invalid && submitted">
+            <ion-label color="danger">Potrebno je stanje proizvoda</ion-label>
+          </div>
+        </ion-col>
+      </ion-row>
+
+      <ion-row class="ion-justify-content-center">
+        <ion-col *ngIf="client" sizeXl="5">
+          <ion-input *ngIf="client" value="{{ client.name }}" readonly="true"></ion-input>
+        </ion-col>
+        <ion-col sizeXl="4">
+          <ion-button (click)="openClientPicker()"
+                      color="light">{{(project ? 'Promeni klijenta' : 'Izaberi klijenta')}}</ion-button>
+        </ion-col>
+      </ion-row>
+
+      <ion-row class="ion-justify-content-center">
+        <ion-col *ngIf="warehouse" sizeXl="5">
+          <ion-input *ngIf="warehouse" value="{{ warehouse.name }}" readonly="true"></ion-input>
+        </ion-col>
+        <ion-col sizeXl="4">
+          <ion-button (click)="openWarehousePicker()"
+                      color="light">{{(project ? 'Promeni magacin' : 'Izaberi magacin')}}</ion-button>
+        </ion-col>
+      </ion-row>
+
+      <ion-row class="ion-justify-content-center ion-margin-vertical">
+        <ion-button type="submit" color="primary"
+                    [disabled]="editorForm.invalid">{{ (project ? 'Sačuvaj' : 'Dodaj') }}</ion-button>
+      </ion-row>
+
+    </ion-grid>
+  </form>
+</ion-content>

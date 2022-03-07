@@ -1,0 +1,17 @@
+ion-toolbar {
+  --background: var(--ion-color-light);
+}
+
+.ion-item-position {
+  position: relative;
+  right: 25px;
+}
+
+.ion-item-padding-start {
+  position: relative;
+  right: 15px;
+}
+
+.ion-row-border-bottom {
+  border-bottom: 1px solid #c8c8c8;
+}

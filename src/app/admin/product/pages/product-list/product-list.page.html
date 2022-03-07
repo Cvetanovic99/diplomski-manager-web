@@ -1,0 +1,100 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title color="dark">Proizvodi</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+
+  <ion-grid>
+
+    <ion-row class="ion-justify-content-between" >
+      <ion-col
+          *ngIf="paginationConfig.total !== undefined"
+          sizeXl="3"
+          sizeLg="4"
+          sizeMd="5"
+          sizeSm="6"
+          sizeXs="12" >
+        <ion-item  lines="none">
+          <ion-chip color="primary">Ukupno proizvoda: {{ paginationConfig.total }}</ion-chip>
+        </ion-item>
+      </ion-col>
+
+      <ion-col sizeXl="2"
+               sizeLg="4"
+               sizeMd="4"
+               sizeSm="6"
+               sizeXs="12"
+               >
+        <ion-button (click)="openEditor()"  button class="ion-margin-start" size="default"  >
+          Dodaj proizvod
+        </ion-button>
+      </ion-col>
+    </ion-row>
+
+    <ion-row *ngIf="filter" class="ion-padding">
+      <ion-col>
+        <ion-item>
+          <ion-input placeholder="Pretraži proizvode..." [formControl]="filter"></ion-input>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+
+    <ion-row class="ion-padding-start">
+
+      <ion-col class="pointer" *ngFor="let product of products" button routerLink="/admin/proizvodi/{{ product.id }}" sizeXl="2"
+      sizeLg="4"
+      sizeMd="4"
+      sizeSm="6"
+      sizeXs="12">
+        <ion-card   >
+          <ion-card-header>
+            <ion-card-title>{{product.name}}</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            Model: {{product.model}}
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+
+    <ion-row *ngIf="products !== undefined && products.length === 0 && !loading" class="zeroFetchedDataMessage">
+      <ion-col class="ion-text-center">
+        <h1>Trenutno nema dodatih proizvoda!</h1>
+      </ion-col>
+    </ion-row>
+
+    <ion-row *ngIf="loading">
+      <ion-col class="ion-text-center">
+          <ion-spinner  color="primary"></ion-spinner>
+      </ion-col>
+    </ion-row>
+
+
+  </ion-grid>
+
+
+  <!-- <ion-item *ngFor="let product of products; index as i" button>
+    <ion-chip color="primary">{{ paginationConfig.pageSize * (paginationConfig.pageIndex - 1) + i + 1}}</ion-chip>
+    <ion-label>{{ product.id }}</ion-label>
+    <ion-button>
+      <ion-icon name="create-outline"></ion-icon>
+    </ion-button>
+  </ion-item> -->
+
+  <ion-row>
+    <ion-col class="ion-text-center">
+      <ion-icon name="chevron-back-outline" class="pointer ion-padding" *ngIf="paginationConfig.pageIndex > 0" (click)="changePage(false)"></ion-icon>
+      <ion-icon
+        *ngIf="paginationConfig.total / (paginationConfig.pageIndex + 1) > paginationConfig.pageSize"
+        (click)="changePage(true)"
+        name="chevron-forward-outline"
+        class="pointer ion-padding"></ion-icon>
+    </ion-col>
+  </ion-row>
+
+</ion-content>

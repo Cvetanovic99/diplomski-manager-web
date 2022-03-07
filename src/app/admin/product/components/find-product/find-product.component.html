@@ -1,0 +1,70 @@
+<ion-content [fullscreen]="true">
+
+  <ion-header>
+    <ion-toolbar>
+      <ion-title class="ion-text-center ion-margin-vertical">
+        Pronađi {{ (product.name) }}
+      </ion-title>
+      <ion-icon size="large" class="ion-padding pointer" slot="end" (click)="dismiss()" name="close-outline"></ion-icon>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-row *ngIf="filter">
+    <ion-col>
+      <ion-item>
+        <ion-input [formControl]="filter" placeholder="Upišite SN..."></ion-input>
+      </ion-item>
+    </ion-col>
+  </ion-row>
+
+  <ion-row *ngIf="paginationConfig.total === 0" class="ion-margin-top">
+    <ion-col>
+      <p class="ion-text-center">Nije iskorišćen nigde!</p>
+    </ion-col>
+  </ion-row>
+
+  <ion-list *ngIf="paginationConfig.total > 0 && !loading">
+    <ion-item *ngFor="let task of tasks; index as i">
+      <ion-chip color="primary">{{ paginationConfig.pageSize * paginationConfig.pageIndex + i + 1}}</ion-chip>
+      <ion-label>
+        <ion-note *ngIf="task.productState">
+          <strong>SN: </strong>{{ task.productState.sn }}
+        </ion-note>
+        <ion-note>
+          <br>
+          <strong>Klijent: </strong>{{ task.project.client.name }}
+        </ion-note>
+        <ion-note *ngIf="task.description">
+          <br/>
+          {{ task.description }}
+        </ion-note>
+        <br>
+        <ion-note class="ion-hide-lg-up">
+          {{ task.createdAt }}
+        </ion-note>
+      </ion-label>
+
+      <ion-label slot="end" class="ion-hide-lg-down">{{ task.createdAt }}</ion-label>
+    </ion-item>
+  </ion-list>
+
+  <ion-row *ngIf="loading">
+    <ion-col class="ion-text-center">
+      <ion-spinner color="primary"></ion-spinner>
+    </ion-col>
+  </ion-row>
+
+  <ion-row *ngIf="!loading">
+    <ion-col class="ion-text-center">
+      <ion-icon name="chevron-back-outline" class="pointer ion-padding" *ngIf="paginationConfig.pageIndex > 0" (click)="changePage(false)">
+
+      </ion-icon>
+      <ion-icon
+        *ngIf="paginationConfig.total / (paginationConfig.pageIndex + 1) > paginationConfig.pageSize"
+        (click)="changePage(true)"
+        name="chevron-forward-outline"
+        class="pointer ion-padding"></ion-icon>
+    </ion-col>
+  </ion-row>
+
+</ion-content>

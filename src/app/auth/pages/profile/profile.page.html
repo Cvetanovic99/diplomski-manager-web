@@ -1,0 +1,192 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title *ngIf="user">{{ user.name }} {{ user.surname }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+
+    <ion-grid style="padding-top: 100px;" >
+    <form [formGroup]="dataEditorForm" *ngIf="dataEditorFormActive" (ngSubmit)="onDataSubmit()" class="ion-margin-bottom">
+      <ion-row class="ion-justify-content-center " >
+        <ion-col sizeXs="12" sizeMd="5" sizeXl="3" >
+          <div class="form-group">
+            <ion-item>
+              <ion-input type="text"
+                         placeholder="Ime"
+                         [autofocus]="true"
+                         formControlName="name"
+              ></ion-input>
+            </ion-item>
+            <ion-label
+              *ngIf="(dataEditorForm.controls.name.touched || dataEditorFormSubmitted) && dataEditorForm.controls.name.errors?.required"
+              class="small-1"
+              color="danger"
+            >Potrebno je uneti ime korisnika
+            </ion-label>
+          </div>
+        </ion-col>
+
+        <ion-col sizeXs="12" sizeMd="5" sizeXl="3">
+          <div class="form-group">
+            <ion-item>
+              <ion-input type="text"
+                         placeholder="Prezime"
+                         [autofocus]="true"
+                         formControlName="surname"
+              ></ion-input>
+            </ion-item>
+            <ion-label
+              *ngIf="(dataEditorForm.controls.surname.touched || dataEditorFormSubmitted) && dataEditorForm.controls.surname.errors?.required"
+              class="small-1"
+              color="danger"
+            >Potrebno je uneti email prezime
+            </ion-label>
+          </div>
+        </ion-col>
+      </ion-row>
+
+
+      <ion-row class="ion-justify-content-center">
+        <ion-col sizeXs="12" sizeMd="10" sizeXl="6">
+          <div class="form-group">
+            <ion-item>
+              <ion-input type="email"
+                         placeholder="Email"
+                         [autofocus]="true"
+                         formControlName="email"
+              ></ion-input>
+            </ion-item>
+            <ion-label
+              *ngIf="(dataEditorForm.controls.email.touched || dataEditorFormSubmitted) && dataEditorForm.controls.email.errors?.required"
+              class="small-1"
+              color="danger"
+            >Potrebno je uneti email adresu
+            </ion-label>
+            <ion-label
+              *ngIf="(dataEditorForm.controls.email.touched || dataEditorFormSubmitted) && dataEditorForm.controls.email.errors?.email"
+              class="small-1"
+              color="danger"
+            >Email adresa nije validna
+            </ion-label>
+          </div>
+        </ion-col>
+      </ion-row>
+
+
+      <ion-row class="ion-justify-content-center">
+        <ion-col sizeXs="12" sizeMd="6" sizeXl="5" class="ion-text-center">
+          <ion-button color="primary" type="submit" class="login-button"
+                      [disabled]="dataEditorForm.invalid">
+            Izmeni
+          </ion-button>
+        </ion-col>
+      </ion-row>
+    </form>
+
+    <form [formGroup]="passwordEditorForm" *ngIf="passwordEditorFormActive" (ngSubmit)="onPasswordSubmit()" class="ion-margin-top">
+      <ion-row class="ion-justify-content-center">
+        <ion-col sizeXs="12" sizeMd="10" sizeXl="6">
+          <div class="form-group">
+            <ion-item>
+              <ion-input #currentPassword type="password" placeholder="Trenutna lozinka" formControlName="currentPassword"></ion-input>
+              <ion-icon name="eye"
+                        slot="end"
+                        class="show-right-icon-input pointer"
+                        (click)="showPassword(currentPassword)"
+              ></ion-icon>
+            </ion-item>
+            <ion-label
+              *ngIf="(passwordEditorForm.controls.currentPassword.touched || passwordEditorFormSubmitted) && passwordEditorForm.controls.currentPassword.errors?.required"
+              class="small-1"
+              color="danger"
+            >Potrebno je uneti trenutnu lozinku
+            </ion-label>
+            <ion-label
+              *ngIf="(passwordEditorForm.controls.currentPassword.touched || passwordEditorFormSubmitted) && passwordEditorForm.controls.currentPassword.errors?.minlength"
+              class="small-1"
+              color="danger"
+            >Trenutna lozinka mora imati minimum 6 karaktera
+            </ion-label>
+          </div>
+        </ion-col>
+      </ion-row>
+
+      <ion-row class="ion-justify-content-center">
+        <ion-col sizeXs="12" sizeMd="10" sizeXl="6">
+          <div class="form-group">
+            <ion-item>
+              <ion-input #password type="password" placeholder="Nova Lozinka" formControlName="password"></ion-input>
+              <ion-icon name="eye"
+                        slot="end"
+                        class="show-right-icon-input pointer"
+                        (click)="showPassword(password)"
+              ></ion-icon>
+            </ion-item>
+            <ion-label
+              *ngIf="(passwordEditorForm.controls.password.touched || passwordEditorFormSubmitted) && passwordEditorForm.controls.password.errors?.required"
+              class="small-1"
+              color="danger"
+            >Potrebno je novu uneti lozinku
+            </ion-label>
+            <ion-label
+              *ngIf="(passwordEditorForm.controls.password.touched || passwordEditorFormSubmitted) && passwordEditorForm.controls.password.errors?.minlength"
+              class="small-1"
+              color="danger"
+            >Nova lozinka mora imati minimum 6 karaktera
+            </ion-label>
+            <ion-label
+              *ngIf="(passwordEditorForm.controls.password.touched || passwordEditorFormSubmitted) && passwordEditorForm.errors?.passwordNotStrong"
+              class="small-1"
+              color="danger"
+            >Nova lozinka mora sadržati minimum 1 cifru, 1 veliko slovo i 1 specijalni karakter
+            </ion-label>
+          </div>
+        </ion-col>
+      </ion-row>
+
+      <ion-row class="ion-justify-content-center">
+        <ion-col sizeXs="12" sizeMd="10" sizeXl="6">
+          <div class="form-group">
+            <ion-item>
+              <ion-input #passwordRepeat type="password" placeholder="Potvrdi Lozinku" formControlName="confirmedPassword"
+              ></ion-input>
+              <ion-icon name="eye"
+                        slot="end"
+                        class="show-right-icon-input pointer"
+                        (click)="showPassword(passwordRepeat)"
+              ></ion-icon>
+            </ion-item>
+            <ion-label
+              *ngIf="(passwordEditorForm.controls.confirmedPassword.touched || passwordEditorFormSubmitted) && passwordEditorForm.controls.confirmedPassword.errors?.required"
+              class="small-1"
+              color="danger"
+            >Potrebno je uneti potvrdu lozinke
+            </ion-label>
+            <br>
+            <ion-label
+              *ngIf="(passwordEditorForm.controls.confirmedPassword.touched || passwordEditorFormSubmitted) && passwordEditorForm.errors?.passwordsNotMatched"
+              class="small-1"
+              color="danger"
+            >Lozinke se ne poklapaju
+            </ion-label>
+          </div>
+        </ion-col>
+      </ion-row>
+
+      <ion-row class="ion-justify-content-center">
+        <ion-col sizeXs="12" sizeMd="6" sizeXl="5" class="ion-text-center">
+          <ion-button color="primary" type="submit" class="login-button"
+                      [disabled]="passwordEditorForm.invalid">
+            Izmeni
+          </ion-button>
+        </ion-col>
+      </ion-row>
+
+  </form>
+    </ion-grid>
+</ion-content>

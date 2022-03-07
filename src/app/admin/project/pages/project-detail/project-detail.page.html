@@ -1,0 +1,126 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/admin/projekti"></ion-back-button>
+    </ion-buttons>
+    <ion-title *ngIf="loading === 0 ">{{ project.title}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+
+  <ion-grid class="ion-padding" >
+
+    <ion-row *ngIf="loading === 0 || project" class="ion-justify-content-between ion-row-border-bottom">
+      <ion-col sizeXl="9.5" sizeLg="6" sizeMd="12" sizeSm="12" sizeXs="12">
+        <h5><strong>Naziv: </strong>{{project.title}}</h5>
+        <h5 *ngIf="project.client"><strong>Klijent:</strong> {{project.client.name}} </h5>
+        <h5 *ngIf="project.client"><strong>Id klijenta:</strong> {{project.client.clientId}} </h5>
+        <h5 *ngIf="project.warehouse"><strong>Magacin:</strong> {{project.warehouse.name}}, {{ project.warehouse.city }}</h5>
+        <ion-item class="ion-no-padding" lines="none">
+          <span>
+             <h5><strong >Stanje:</strong> {{ project.state }}</h5>
+          </span>
+          &nbsp;
+             <ion-icon  *ngIf="stateIcon" [name]="stateIcon.name" [color]="stateIcon.color" size="large"></ion-icon>
+
+         </ion-item>
+      </ion-col>
+      <ion-col sizeXl="2.5" sizeLg="4" sizeMd="12" sizeSm="12" sizeXs="12" >
+        <ion-item lines="none" >
+          <ion-button  size="default" (click)="openEditor(project)">Izmeni projekat</ion-button>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+
+    <ion-row>
+      <ion-col size="12">
+            <!--PDF UPLOAD-->
+      <app-pdf-uploader *ngIf="project"
+      [projectId]="project.id"
+      [pdfFile]="project.pdfFile"
+      [projectState]="project.state"
+      > </app-pdf-uploader>
+      </ion-col>
+    </ion-row>
+
+
+    <ion-row class="ion-text-center">
+      <ion-col>
+        <h1>Odrađeno</h1>
+      </ion-col>
+    </ion-row>
+
+    <ion-list>
+      <ion-item *ngFor="let task of tasks; index as i"  class="pointer selectable">
+        <ion-chip color="primary">{{ paginationConfig.pageSize * paginationConfig.pageIndex + i + 1}}</ion-chip>
+
+        <ion-label *ngIf="task.productState">
+          <h2 *ngIf="task.product "><strong> {{ task.product.name }}</strong></h2>
+          <ion-note *ngIf="!task.product.hasSN">
+            <strong>Iskorišćeno: </strong>{{ task.quantityUsed }},
+          </ion-note>
+          <ion-note *ngIf="task.product.hasSN">
+            <strong>Iskorišćen: </strong>{{ task.sn }},
+          </ion-note>
+          <ion-note>
+            <strong>Glavni radnik: </strong>{{ task.employed1.name  }}
+          </ion-note>
+          <ion-note *ngIf="task.employed2">
+            <strong>Pomoćni radnik: </strong>{{ task.employed2.name }}
+          </ion-note>
+          <ion-note *ngIf="task.description">
+            <br/>
+            {{ task.description }}
+          </ion-note>
+          <br>
+          <ion-note class="ion-hide-lg-up">
+            {{ task.createdAt }}
+          </ion-note>
+        </ion-label>
+
+        <ion-label *ngIf="!task.productState">
+          <ion-note>
+            <strong>{{ task.description }}</strong>
+          </ion-note>
+          <br>
+          <ion-note class="ion-hide-lg-up">
+            {{ task.createdAt }}
+          </ion-note>
+        </ion-label>
+
+        <ion-label slot="end" class="ion-hide-lg-down">{{ task.createdAt }}</ion-label>
+        <ion-icon *ngIf="project && project.state === 'U procesu' " slot="end" (click)="deleteTask($event, task.id)" color="danger" name="trash-outline"></ion-icon>
+      </ion-item>
+    </ion-list>
+
+    <ion-row *ngIf="loading === 0 && paginationConfig.total !== undefined && paginationConfig.total === 0" class="zeroFetchedDataMessage">
+      <ion-col class="ion-text-center">
+        <h1>Trenutno ništa nije odrađeno na ovom projektu!</h1>
+      </ion-col>
+    </ion-row>
+
+    <ion-row *ngIf="loading > 0">
+      <ion-col class="ion-text-center">
+        <ion-spinner color="primary"></ion-spinner>
+      </ion-col>
+    </ion-row>
+
+    <ion-row>
+
+      <ion-col class="ion-text-center">
+
+        <ion-icon name="chevron-back-outline" class="pointer ion-padding" *ngIf="paginationConfig.pageIndex > 0" (click)="changePage(false)"></ion-icon>
+        <ion-icon
+          *ngIf="paginationConfig.total / (paginationConfig.pageIndex + 1) > paginationConfig.pageSize"
+          (click)="changePage(true)"
+          name="chevron-forward-outline"
+          class="pointer ion-padding">
+        </ion-icon>
+      </ion-col>
+
+    </ion-row>
+
+  </ion-grid>
+</ion-content>

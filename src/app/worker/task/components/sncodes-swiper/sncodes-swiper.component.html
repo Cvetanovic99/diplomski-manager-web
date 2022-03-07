@@ -1,0 +1,70 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-icon  name="arrow-back-outline" slot="start" size="large" class="pointer ion-padding-start" (click)="prev()">  </ion-icon>
+    <ion-title class="ion-text-center ion-margin-vertical">
+      {{ (isUpdate ? 'Izmeni' : 'Dodaj') }} SN
+    </ion-title>
+    <ion-icon size="large" class="ion-padding pointer" slot="end" (click)="dismiss()" name="close-outline"></ion-icon>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content  [fullscreen]="true" class="ion-padding" style="height: 400px;">
+
+
+    <ion-grid *ngIf="show">
+
+    <ion-row *ngIf="!isProductWithSN" class="ion-justify-content-end">
+      <ion-col  sizeXl="5">
+        <ion-button (click)="doneWithChanges()" size="default" color="light">Zavrsi sa izmenama</ion-button>
+      </ion-col>
+    </ion-row>
+
+     <ion-row *ngIf="filter" class="ion-padding">
+       <ion-col>
+         <ion-item>
+           <ion-input placeholder="Pretraži SN-ove..." [formControl]="filter"></ion-input>
+         </ion-item>
+       </ion-col>
+     </ion-row>
+<ng-container *ngIf="snCodes !== undefined">
+
+  <ion-item *ngFor="let snCode of snCodes; index as i" [disabled]="checkIfSNCodeIsPickedBefore(snCode)" button (click)="getSNCode(snCode)">
+    <ion-label  > {{  snCode.sn }} </ion-label>
+  </ion-item>
+
+</ng-container>
+<ion-label *ngIf="snCodes === undefined">Nema</ion-label>
+
+     <ion-row *ngIf="!loading && paginationConfig.total !== undefined && paginationConfig.total === 0" class="zeroFetchedDataMessage">
+       <ion-col class="ion-text-center">
+         <h1>Trenutno nema dodatih magacina!</h1>
+       </ion-col>
+     </ion-row>
+
+     <ion-row *ngIf="loading">
+       <ion-col class="ion-text-center">
+           <ion-spinner color="primary"></ion-spinner>
+       </ion-col>
+     </ion-row>
+
+     <ion-row>
+
+       <ion-col class="ion-text-center">
+
+         <ion-icon name="chevron-back-outline" class="pointer ion-padding" *ngIf="paginationConfig.pageIndex > 0" (click)="changePage(false)"></ion-icon>
+           <ion-icon
+             *ngIf="paginationConfig.total / (paginationConfig.pageIndex + 1) > paginationConfig.pageSize"
+             (click)="changePage(true)"
+             name="chevron-forward-outline"
+             class="pointer ion-padding">
+           </ion-icon>
+       </ion-col>
+
+     </ion-row>
+
+   </ion-grid>
+
+
+
+
+</ion-content>

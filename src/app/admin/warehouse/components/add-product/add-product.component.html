@@ -1,0 +1,67 @@
+<ion-header>
+  <ion-toolbar>
+   <ion-title class="ion-text-center ion-margin-vertical">
+    {{ (!isNew ? product.name : 'Dodaj proizvod') }}
+   </ion-title>
+    <ion-icon size="large" class="ion-padding pointer" slot="end" (click)="dismiss()" name="close-outline"></ion-icon>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+
+
+  <form [formGroup]="editorForm" (ngSubmit)="onSubmit()" *ngIf="editorFormActive">
+
+    <ion-grid>
+
+      <ion-row class="ion-justify-content-center">
+        <ion-col sizeXl="4" *ngIf="isNew && this.product" >
+          <ion-input *ngIf="product" value="{{ product.name }}" readonly="true"></ion-input>
+        </ion-col>
+        <ion-col sizeXl="4" *ngIf="isNew">
+          <ion-button (click)="openPicker(types.product)" color="light">Izaberi proizvod</ion-button>
+        </ion-col>
+      </ion-row>
+
+      <ion-row class="ion-justify-content-center" *ngIf="this.product && !this.product.hasSN">
+        <ion-col sizeXl="10">
+          <ion-item>
+            <ion-label position="floating" for="quantity">Količina</ion-label>
+            <ion-input id="quantity" formControlName="quantity" type="number" min="1"></ion-input>
+          </ion-item>
+          <div *ngIf="editorForm.controls.quantity.invalid && submitted">
+            <ion-label color="danger">Potrebno je količinu proizvoda</ion-label>
+          </div>
+          <div *ngIf="editorForm.controls.quantity.invalid && editorForm.controls.quantity.errors?.min">
+            <ion-label color="danger">Minimalna količina proizvoda je 1</ion-label>
+          </div>
+          <div *ngIf="editorForm.controls.quantity.invalid && editorForm.controls.quantity.errors?.max">
+            <ion-label color="danger">Maksimalna količina proizvoda koji ima SN je 1</ion-label>
+          </div>
+        </ion-col>
+      </ion-row>
+
+      <ion-row class="ion-justify-content-center" *ngIf="this.product && this.product.hasSN">
+          <ion-col sizeXl="10">
+            <ion-item>
+              <ion-label position="floating" for="snCodes">Dodaj sn-ove odvojene zarezom</ion-label>
+              <ion-textarea rows="12" col="12"  id="snCodes" formControlName="snCodes" ></ion-textarea>
+            </ion-item>
+          </ion-col>
+      </ion-row>
+
+      <ion-row *ngIf="loading">
+        <ion-col class="ion-text-center">
+          <ion-spinner color="primary"></ion-spinner>
+        </ion-col>
+      </ion-row>
+
+      <ion-row class="ion-justify-content-center ion-margin-vertical">
+        <ion-button type="submit" color="primary"
+                    [disabled]="editorForm.invalid">{{ (product ? 'Sačuvaj' : 'Dodaj') }}</ion-button>
+      </ion-row>
+
+
+    </ion-grid>
+  </form>
+</ion-content>

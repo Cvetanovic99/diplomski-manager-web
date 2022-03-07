@@ -1,0 +1,108 @@
+<ion-content [fullscreen]="true">
+
+  <form [formGroup]="editorForm" (ngSubmit)="onSubmit()" *ngIf="editorFormActive">
+
+    <swiper  style="height: 550px;" #swiper [config]="swiperConfig">
+
+      <!-- ADD DESCRIPTION ------------------------------------------------------------------------------------------>
+      <ng-template swiperSlide>
+
+        <ion-header>
+          <ion-toolbar>
+            <ion-title class="ion-text-center ion-margin-vertical">
+              {{ (task ? 'Izmeni' : 'Dodaj') }} napomenu
+            </ion-title>
+            <ion-icon size="large" class="ion-padding pointer" slot="end" (click)="dismiss()" name="close-outline"></ion-icon>
+          </ion-toolbar>
+        </ion-header>
+
+        <ion-grid>
+
+          <ion-row class="ion-justify-content-end">
+            <ion-col sizeXl="4">
+              <ion-button color="primary" size="default"  [disabled]="editorForm.controls.description.invalid" (click)="redirectToSlideFromDescriptionSlide()">
+                {{ lastSlideVisited ? 'Završi' : 'Dodaj kolegu' }}
+                <ion-icon name="chevron-forward-outline"></ion-icon>
+              </ion-button>
+            </ion-col>
+          </ion-row>
+
+          <ion-row class="ion-justify-content-center" size="large">
+            <ion-col sizeXl="12" sizeMd="12" sizeLg="12" sizeSm="12" sizeXs="12"  size="large">
+              <ion-item>
+                <ion-textarea rows="12" cols="12"  id="description" formControlName="description" placeholder="Dodajte napomenu..."></ion-textarea>
+              </ion-item>
+            </ion-col>
+            <div *ngIf="editorForm.controls.description.touched && editorForm.controls.description.invalid">
+              <ion-label color="danger">Napomena je neophodna</ion-label>
+            </div>
+          </ion-row>
+
+        </ion-grid>
+
+      </ng-template>
+
+      <!-- ADD COWORKER --------------------------------------------------------------------------------------------->
+      <ng-template swiperSlide>
+        <app-user-swiper
+          [mainWorkerId] = "mainWorker.id"
+          (slideToPreviousEmmiter)="previousSlide()"
+          (doesntHaveCoworkerEmmiter)="onCoworkerPicked()"
+          (coworkerEmmiter)="onCoworkerPicked($event)"
+          (dismissEmmiter)="this.dismiss()"
+        ></app-user-swiper>
+      </ng-template>
+
+      <!-- SUBMIT -------------------------------------------------------------------------------------------------->
+      <ng-template swiperSlide>
+        <ion-header>
+          <ion-toolbar>
+            <ion-icon  name="arrow-back-outline" slot="start" size="large" class="pointer ion-padding-start" (click)="previousSlide()"></ion-icon>
+
+            <ion-title class="ion-text-center ion-margin-vertical">
+              Završi {{ (task ? 'izmenu' : 'dodavanje') }} napomene
+            </ion-title>
+            <ion-icon size="large" class="ion-padding pointer" slot="end" (click)="dismiss()" name="close-outline"></ion-icon>
+          </ion-toolbar>
+        </ion-header>
+
+        <ion-grid>
+
+          <ion-row class="ion-padding-horizontal">
+            <ion-col>
+              <ion-item lines="none" class="ion-no-padding">
+                <ion-label *ngIf="coworker" slot="start">{{ coworker.name + ' ' + coworker.surname }}</ion-label>
+                <ion-button color="primary" slot="end" size="default" (click)="previousSlide()">{{ coworker ? 'Izmeni radnika' : 'Dodaj radnika' }}</ion-button>
+              </ion-item>
+            </ion-col>
+
+          </ion-row>
+
+          <ion-row class="ion-margin-top ion-padding-end ion-justify-content-end">
+            <ion-item lines="none">
+              <ion-col >
+                <ion-button size="default" (click)="previousSlide(); previousSlide()" color="primary">Izmeni opis</ion-button>
+              </ion-col>
+            </ion-item>
+          </ion-row>
+
+          <ion-row class="ion-padding-horizontal">
+            <ion-col sizeXl="12">
+              <ion-textarea rows="12" cols="12"  id="description" formControlName="description" placeholder="Dodajte napomenu..."></ion-textarea>
+            </ion-col>
+          </ion-row>
+
+          <ion-row class="ion-margin-vertical ion-padding-horizontal">
+            <ion-col class="ion-text-center">
+              <ion-button [disabled]="editorForm.invalid"  type="submit" color="primary" >{{ (task ? 'Sačuvaj' : 'Dodaj') }}</ion-button>
+            </ion-col>
+          </ion-row>
+
+        </ion-grid>
+      </ng-template>
+
+    </swiper>
+
+  </form>
+
+</ion-content>

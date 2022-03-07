@@ -1,0 +1,67 @@
+<ion-header>
+  <ion-toolbar>
+   <ion-title class="ion-text-center ion-margin-vertical">
+      SN-ovi
+   </ion-title>
+    <ion-icon size="large" class="ion-padding pointer" slot="end" (click)="dismiss()" name="close-outline"></ion-icon>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="ion-padding">
+
+
+    <ion-grid >
+
+
+     <ion-row *ngIf="filter" class="ion-padding">
+       <ion-col>
+         <ion-item>
+           <ion-input placeholder="Pretraži SN-ove..." [formControl]="filter"></ion-input>
+         </ion-item>
+       </ion-col>
+     </ion-row>
+
+     <ion-row *ngFor="let product of products; index as i" button>
+
+       <ion-col>
+         <ion-item class="selectable">
+           <ion-chip color="primary">{{ paginationConfig.pageSize * paginationConfig.pageIndex + i + 1}}</ion-chip>
+           <ion-label>{{ product.sn }} </ion-label>
+         </ion-item>
+       </ion-col>
+
+     </ion-row>
+
+     <ion-row *ngIf="!loading && paginationConfig.total !== undefined && paginationConfig.total === 0" class="zeroFetchedDataMessage">
+       <ion-col class="ion-text-center">
+         <h1>Trenutno nema dodatih Serijskih brojejva za taj proizvod!</h1>
+       </ion-col>
+     </ion-row>
+
+     <ion-row *ngIf="loading">
+       <ion-col class="ion-text-center">
+           <ion-spinner color="primary"></ion-spinner>
+       </ion-col>
+     </ion-row>
+
+     <ion-row>
+
+       <ion-col class="ion-text-center">
+
+         <ion-icon name="chevron-back-outline" class="pointer ion-padding" *ngIf="paginationConfig.pageIndex > 0" (click)="changePage(false)"></ion-icon>
+           <ion-icon
+             *ngIf="paginationConfig.total / (paginationConfig.pageIndex + 1) > paginationConfig.pageSize"
+             (click)="changePage(true)"
+             name="chevron-forward-outline"
+             class="pointer ion-padding">
+           </ion-icon>
+       </ion-col>
+
+     </ion-row>
+
+   </ion-grid>
+
+
+
+
+</ion-content>

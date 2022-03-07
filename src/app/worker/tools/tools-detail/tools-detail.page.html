@@ -1,0 +1,32 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Zaduženi alat</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+ <ion-content>
+  <ion-grid *ngIf="this.user && this.user.tools.length>0 ">
+    <ion-row>
+      <ion-col size="12">
+        <form [formGroup]="editorForm" *ngIf="editorFormActive">
+          <ion-item>
+            <ion-textarea autoGrow="true" rows="12" cols="12" id="tools" formControlName="tools" readonly="true"></ion-textarea>
+          </ion-item>
+        </form>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>
+
+<ion-content>
+  <ion-grid *ngIf="!this.user || (this.user?.tools && this.user.tools.length===0)" >
+    <ion-row >
+      <ion-col class="ion-text-center">
+        <h1>Nemate dodati alat!</h1>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

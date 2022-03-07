@@ -1,0 +1,30 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title class="ion-text-center ion-margin-vertical">
+        Izmeni zaduženi alat
+    </ion-title>
+    <ion-icon size="large" class="ion-padding pointer" slot="end" (click)="dismiss()" name="close-outline"></ion-icon>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+
+  <form [formGroup]="editorForm" (ngSubmit)="onSubmit()" *ngIf="editorFormActive">
+
+    <ion-grid>
+
+      <ion-row class="ion-justify-content-center">
+        <ion-col sizeXl="10">
+          <ion-item>
+            <ion-textarea rows="8" col="12"  id="tools" formControlName="tools" placeholder="Klešta, Merdevine.."></ion-textarea>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+
+      <ion-row class="ion-justify-content-center ion-margin-vertical">
+        <ion-button type="submit" color="primary">Sačuvaj</ion-button>
+      </ion-row>
+
+    </ion-grid>
+  </form>
+</ion-content>

@@ -1,0 +1,88 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Klijenti</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+
+
+<ion-content class="ion-padding">
+  <ion-grid>
+
+    <ion-row class="ion-justify-content-between" >
+
+      <ion-col
+        *ngIf="paginationConfig.total !== undefined"
+        sizeXl="3" sizeLg="4" sizeMd="5" sizeSm="6" sizeXs="12">
+        <ion-item  lines="none">
+          <ion-chip color="primary" >Ukupno klijenata: {{ paginationConfig.total }}</ion-chip>
+        </ion-item>
+      </ion-col>
+
+      <ion-col sizeXl="2" sizeLg="4" sizeMd="4" sizeSm="6" sizeXs="12">
+        <ion-button (click)="openEditor()" button class="ion-margin-start">
+          Dodaj klijenta
+        </ion-button>
+      </ion-col>
+
+    </ion-row>
+
+    <ion-row *ngIf="filter" class="ion-padding">
+      <ion-col>
+        <ion-item>
+          <ion-input placeholder="Pretraži klijente..." [formControl]="filter"></ion-input>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+
+    <ion-row *ngFor="let client of clients; index as i" button>
+
+      <ion-col>
+        <ion-item >
+          <ion-chip color="primary">{{ paginationConfig.pageSize * paginationConfig.pageIndex + i + 1}}</ion-chip>
+          <ion-label>
+            <h2>ID klijenta: {{ client.clientId }} </h2>
+            <ion-note >
+              Ime i Prezime:{{client.name}}
+            </ion-note>
+          </ion-label>
+          <ion-button (click)="openEditor(client)">
+            <ion-icon name="create-outline"></ion-icon>
+          </ion-button>
+        </ion-item>
+      </ion-col>
+
+    </ion-row>
+
+    <ion-row *ngIf="clients !== undefined && clients.length === 0 && !loading" style="padding-top: 100px;">
+      <ion-col class="ion-text-center">
+        <h1>Trenutno nema dodatih klijente!</h1>
+      </ion-col>
+    </ion-row>
+
+    <ion-row *ngIf="loading">
+      <ion-col class="ion-text-center">
+        <ion-spinner  color="primary"></ion-spinner>
+      </ion-col>
+    </ion-row>
+
+    <ion-row>
+
+      <ion-col class="ion-text-center">
+
+        <ion-icon name="chevron-back-outline" class="pointer ion-padding" *ngIf="paginationConfig.pageIndex > 0" (click)="changePage(false)"></ion-icon>
+        <ion-icon
+          *ngIf="paginationConfig.total / (paginationConfig.pageIndex + 1) > paginationConfig.pageSize"
+          (click)="changePage(true)"
+          name="chevron-forward-outline"
+          class="pointer ion-padding">
+        </ion-icon>
+      </ion-col>
+
+    </ion-row>
+
+  </ion-grid>
+</ion-content>

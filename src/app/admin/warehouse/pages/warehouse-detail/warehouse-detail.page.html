@@ -1,0 +1,94 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/admin/magacini"></ion-back-button>
+    </ion-buttons>
+    <ion-title *ngIf="loading === 0 ">Magacin {{ warehouse.name}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+
+  <ion-grid class="ion-padding" >
+
+    <ion-row *ngIf="loading === 0">
+      <ion-col sizeXl="10" sizeLg="6" sizeMd="12" sizeSm="12" sizeXs="12">
+        <h5><strong>Naziv skladišta:</strong> {{warehouse.name}} </h5>
+        <h5><strong>Grad:</strong> {{warehouse.city}} </h5>
+        <h5><strong>Ukupan broj proizvoda u magacinu:</strong> {{ paginationConfig.total }}</h5>
+      </ion-col>
+      <ion-col sizeXl="2" sizeLg="4" sizeMd="12" sizeSm="12" sizeXs="12">
+        <ion-button (click)="openEditor()"  button class="ion-margin-start" size="default"  >
+          Izmeni Magacin
+        </ion-button>
+      </ion-col>
+    </ion-row>
+
+
+    <ion-row class="ion-text-center">
+      <ion-col sizeXl="5" sizeLg="8" sizeMd="10" sizeSm="12" sizeXs="12">
+        <ion-item lines="none">
+          <ion-label slot="start">Proizvodi u magacinu</ion-label>
+          <ion-button slot="start" size="default" (click)="openProductEditor(null,true)">Dodaj</ion-button>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+
+    <ion-row *ngIf="filter" class="ion-padding">
+      <ion-col>
+        <ion-item>
+          <ion-input placeholder="Pretraži proizvode..." [formControl]="filter"></ion-input>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+
+
+    <ion-list>
+
+        <ion-item *ngFor="let product of products; index as i">
+          <ion-chip color="primary">{{ paginationConfig.pageSize * paginationConfig.pageIndex + i + 1}}</ion-chip>
+          <ion-label *ngIf="product.states">
+            <h2><strong>{{ product.name }}, </strong>
+              <ion-note >
+                <strong>Količina:</strong> {{ product.hasSN ? product.states.length : product.states[0].quantity }} {{product.unit}}
+              </ion-note>
+            </h2>
+            <ion-note>
+              <strong>Model:</strong> {{product.model}}
+            </ion-note>
+          </ion-label>
+          <ion-button *ngIf="product.hasSN" (click)="openSNCodesModal(product)"> Vidi SN-ove </ion-button>
+          <ion-icon slot="end" name="add-outline" color="primary" class="pointer" size="large" (click)="openProductEditor(product,false)"></ion-icon>
+        </ion-item>
+    </ion-list>
+
+    <ion-row *ngIf="loading === 0 && paginationConfig.total !== undefined && paginationConfig.total === 0" class="zeroFetchedDataMessage">
+      <ion-col class="ion-text-center">
+        <h1>Trenutno nema dodatih proizvoda!</h1>
+      </ion-col>
+    </ion-row>
+
+    <ion-row *ngIf="loading > 0">
+      <ion-col class="ion-text-center">
+        <ion-spinner color="primary"></ion-spinner>
+      </ion-col>
+    </ion-row>
+
+    <ion-row>
+
+      <ion-col class="ion-text-center">
+
+        <ion-icon name="chevron-back-outline" class="pointer ion-padding" *ngIf="paginationConfig.pageIndex > 0" (click)="changePage(false)"></ion-icon>
+        <ion-icon
+          *ngIf="paginationConfig.total / (paginationConfig.pageIndex + 1) > paginationConfig.pageSize"
+          (click)="changePage(true)"
+          name="chevron-forward-outline"
+          class="pointer ion-padding">
+        </ion-icon>
+      </ion-col>
+
+    </ion-row>
+
+  </ion-grid>
+</ion-content>

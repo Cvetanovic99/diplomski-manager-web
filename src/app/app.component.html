@@ -1,0 +1,36 @@
+<ion-app>
+  <ion-split-pane contentId="main-content" id="id-main-content" >
+    <ion-menu [disabled]="!showMenu" class="ion-no-padding" contentId="main-content" type="overlay" id="side-menu">
+      <ion-content color="primary">
+        <ion-list  id="inbox-list" class="ion-no-padding ion-no-margin ion-no-border ion-text-center" style="border-bottom: 4px solid rgb(5,68,104);" >
+          <ion-list-header color="primary ion-align-self-center">
+            <ion-item class="ion-padding-start " color="primary" lines="none">
+
+              <h2 style="font-weight: bold;">Diplomski</h2>
+
+            </ion-item>
+          </ion-list-header >
+          <ion-menu-toggle auto-hide="false" *ngFor="let p of appPages; let i = index"  >
+
+            <ion-item class="sidebar-router-ion-item menu-ion-item" routerDirection="root" [routerLink]="[p.url]" lines="none" detail="false" routerLinkActive="selected">
+              <ion-icon slot="start" [ios]="p.icon + '-outline'" [md]="p.icon + '-sharp'" color="light"></ion-icon>
+              <ion-label>{{ p.title }}</ion-label>
+            </ion-item>
+          </ion-menu-toggle>
+        </ion-list>
+
+
+      </ion-content>
+
+      <ion-footer >
+
+        <ion-item color="primary" class="sidebar-footer-ion-item" >
+          <ion-icon name="person-circle-outline" class="pointer ion-padding-start" slot="start" color="light" routerLink="/profil"></ion-icon>
+          <ion-icon name="log-out-outline" class="pointer" slot="start" color="light" (click)="logout()"></ion-icon>
+        </ion-item>
+      </ion-footer>
+
+    </ion-menu>
+    <ion-router-outlet id="main-content"></ion-router-outlet>
+  </ion-split-pane>
+</ion-app>

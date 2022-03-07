@@ -1,0 +1,78 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Zaposleni</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+
+<ion-content class="ion-padding">
+  <ion-grid>
+
+    <ion-row  class="ion-justify-content-between">
+      <ion-col *ngIf="paginationConfig.total !== undefined" sizeXl="3" sizeLg="4" sizeMd="5" sizeSm="6" sizeXs="12">
+        <ion-item  lines="none">
+          <ion-chip color="primary" >Ukupno zaposlenih: {{ paginationConfig.total }}</ion-chip>
+        </ion-item>
+      </ion-col>
+
+      <ion-col sizeXl="2"  sizeLg="4" sizeMd="4" sizeSm="6" sizeXs="12">
+        <ion-button (click)="goToRegister()" class="ion-margin-start" size="default" >
+          Dodaj zaposlenog
+        </ion-button>
+      </ion-col>
+    </ion-row>
+
+    <ion-row class="ion-padding" *ngIf="filter">
+      <ion-col>
+        <ion-item>
+          <ion-input placeholder="Pretraži zaposlene..." [formControl]="filter"></ion-input>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+
+    <ion-row *ngFor="let user of users; index as i" >
+      <ion-col class="ion-padding-start" >
+        <ion-item routerLink="/admin/zaposljeni/{{ user.id }}">
+          <ion-chip color="primary">{{ paginationConfig.pageSize * paginationConfig.pageIndex + i + 1}}</ion-chip>
+          <ion-label>
+            <h2>Ime: {{ user.name }} {{ user.surname }}</h2>
+<!--            <ion-note>-->
+<!--              Email: {{user.email}}-->
+<!--            </ion-note>-->
+          </ion-label>
+<!--          <ion-button (click)="openEditor($event, user.id);">-->
+<!--            <ion-icon name="create-outline"></ion-icon>-->
+<!--          </ion-button>-->
+        </ion-item>
+      </ion-col>
+    </ion-row>
+
+    <ion-row *ngIf="!loading && paginationConfig.total !== undefined && paginationConfig.total === 0" class="zeroFetchedDataMessage">
+      <ion-col class="ion-text-center">
+        <h1>Trenutno nema zaposlenih!</h1>
+      </ion-col>
+    </ion-row>
+
+    <ion-row *ngIf="loading">
+      <ion-col class="ion-text-center">
+          <ion-spinner color="primary"></ion-spinner>
+      </ion-col>
+    </ion-row>
+
+    <ion-row>
+      <ion-col class="ion-text-center">
+        <ion-icon name="chevron-back-outline" class="pointer ion-padding" *ngIf="paginationConfig.pageIndex > 0" (click)="changePage(false)"></ion-icon>
+        <ion-icon
+          *ngIf="paginationConfig.total / (paginationConfig.pageIndex + 1) > paginationConfig.pageSize"
+          (click)="changePage(true)"
+          name="chevron-forward-outline"
+          class="pointer ion-padding"></ion-icon>
+      </ion-col>
+    </ion-row>
+
+  </ion-grid>
+
+</ion-content>

@@ -1,0 +1,20 @@
+.header {
+  --background: var(--ion-color-primary);
+}
+
+//.footer {
+//  --background: var(--ion-color-light-tint);
+//}
+
+.logo {
+  font-size: 48px;
+  color: var(--ion-color-primary);
+  text-shadow: 1px 1px var(--ion-color-dark);
+}
+
+.responsvie {
+  // max-width: 512px;
+  // max-height: 256px;
+  height: auto;
+  width: 100%;
+}

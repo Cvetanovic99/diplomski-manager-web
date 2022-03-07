@@ -1,0 +1,147 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/admin/zaposljeni"></ion-back-button>
+    </ion-buttons>
+    <ion-buttons slot="end" *ngIf="loading === 0">
+      <ion-button routerLink="/admin/zaposljeni/{{user.id}}/izmeni">
+        <ion-icon name="create-outline" size="large" color="primary"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title *ngIf="loading === 0 ">{{ user.name}} {{ user.surname }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+
+  <ion-grid class="ion-padding" >
+
+    <ion-row *ngIf="loading === 0 || user">
+      <ion-col sizeXl="6" sizeLg="6" sizeMd="12" sizeSm="12" sizeXs="12">
+        <h5><strong>Ime:</strong> {{user.name}} </h5>
+        <h5><strong>Prezime:</strong> {{user.surname}} </h5>
+      </ion-col>
+      <ion-col sizeXl="6" sizeLg="6" sizeMd="12" sizeSm="12" sizeXs="12">
+        <ion-button (click)="openEditor()"  button size="default">
+          {{ user.tools ? 'Izmeni zaduženi alat' : 'Dodaj zaduženi alat' }}
+        </ion-button>
+        <p *ngIf="user.tools">
+          <strong>Zadužen alat:</strong> {{user.tools}}
+        </p>
+      </ion-col>
+    </ion-row>
+
+    <ion-row class="ion-text-center">
+      <ion-col>
+        <h1>Odrađeno</h1>
+      </ion-col>
+    </ion-row>
+
+    <form [formGroup]="excelFrom">
+      <ion-row>
+        <ion-col sizeXl="3" sizeLg="12" sizeMd="12" sizeMd="12" sizeXs="12" >
+          <ion-item>
+            <ion-label>Početak</ion-label>
+            <ion-datetime formControlName="start" display-timezone="utc"></ion-datetime>
+          </ion-item>
+        </ion-col>
+        <ion-col sizeXl="3" sizeLg="12" sizeMd="12" sizeMd="12" sizeXs="12" >
+          <ion-item>
+            <ion-label>Kraj</ion-label>
+            <ion-datetime formControlName="end" display-timezone="utc"></ion-datetime>
+          </ion-item>
+        </ion-col>
+        <ion-col sizeXl="3" sizeLg="12"  sizeMd="12" sizeMd="12" sizeXs="12" *ngIf="projects !== undefined">
+          <ion-item>
+            <ion-label>Projekat</ion-label>
+            <ion-select interface="popover" [value]="null" formControlName="projectId">
+              <ion-select-option [value]="null">Izaberi</ion-select-option>
+              <ion-select-option [value]="project.id" *ngFor="let project of projects">
+                {{ project.title }}
+              </ion-select-option>
+            </ion-select>
+          </ion-item>
+        </ion-col>
+        <ion-col sizeXl="3" sizeLg="12"  sizeMd="12" sizeMd="12" sizeXs="12" class="ion-text-end">
+          <ion-button color="primary" (click)="fetchReport()">Preuzmi excel</ion-button>
+        </ion-col>
+      </ion-row>
+    </form>
+
+    <ng-container *ngIf="doneProjects !== undefined && doneProjects.length > 0">
+
+    <ng-container *ngFor="let project of doneProjects">
+      <ion-row>
+        <ion-col>
+          <h5>{{ project.title }}</h5>
+        </ion-col>
+      </ion-row>
+
+          <ion-list>
+            <ion-item *ngFor="let task of project.tasks; index as i">
+              <ion-chip color="primary">{{ paginationConfig.pageSize * paginationConfig.pageIndex + i + 1}}</ion-chip>
+
+              <ion-label *ngIf="task.productState">
+                <h2><strong> {{ task.productState.productName }}</strong></h2>
+                <ion-note >
+                  <strong>Iskorišćeno: </strong>{{ task.quantityUsed }},
+                </ion-note>
+                <ion-note *ngIf="task.employed1">
+                  <strong>Glavni radnik: </strong>{{ task.employed1.name + ' ' + task.employed1.surname }}
+                </ion-note>
+                <ion-note *ngIf="task.employed2">
+                  <strong>Pomoćni radnik: </strong>{{ task.employed2.name + ' ' + task.employed2.surname }}
+                </ion-note>
+                <ion-note *ngIf="task.description">
+                  <br/>
+                  {{ task.description }}
+                </ion-note>
+                <br>
+                <ion-note class="ion-hide-lg-up">
+                  {{ task.createdAt }}
+                </ion-note>
+              </ion-label>
+
+              <ion-label *ngIf="!task.productState">
+                <ion-note>
+                  <strong>{{ task.description }}</strong>
+                </ion-note>
+              </ion-label>
+
+              <ion-label slot="end" class="ion-hide-lg-down">{{ task.createdAt }}</ion-label>
+            </ion-item>
+          </ion-list>
+
+          <ion-row *ngIf="loading === 0 && paginationConfig.total !== undefined && paginationConfig.total === 0" class="zeroFetchedDataMessage">
+            <ion-col class="ion-text-center">
+              <h1>Trenutno ništa nije odrađeno na ovom projektu!</h1>
+            </ion-col>
+          </ion-row>
+
+    </ng-container>
+    </ng-container>
+
+    <ion-row *ngIf="loading > 0">
+      <ion-col class="ion-text-center">
+        <ion-spinner color="primary"></ion-spinner>
+      </ion-col>
+    </ion-row>
+
+    <ion-row>
+
+      <ion-col class="ion-text-center">
+
+        <ion-icon name="chevron-back-outline" class="pointer ion-padding" *ngIf="paginationConfig.pageIndex > 0" (click)="changePage(false)"></ion-icon>
+        <ion-icon
+          *ngIf="paginationConfig.total / (paginationConfig.pageIndex + 1) > paginationConfig.pageSize"
+          (click)="changePage(true)"
+          name="chevron-forward-outline"
+          class="pointer ion-padding">
+        </ion-icon>
+      </ion-col>
+
+    </ion-row>
+
+  </ion-grid>
+</ion-content>

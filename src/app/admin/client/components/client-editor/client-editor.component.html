@@ -1,0 +1,85 @@
+<ion-content [fullscreen]="true">
+
+  <ion-header>
+    <ion-toolbar>
+      <ion-title class="ion-text-center ion-margin-vertical">
+        {{ (client ? 'Izmeni' : 'Dodaj') }} klijenta
+      </ion-title>
+      <ion-icon size="large" class="ion-padding pointer" slot="end" (click)="dismiss()" name="close-outline"></ion-icon>
+    </ion-toolbar>
+  </ion-header>
+
+  <form [formGroup]="editorForm" (ngSubmit)="onSubmit()" *ngIf="editorFormActive">
+
+      <ion-grid >
+
+      <ion-row class="ion-justify-content-center">
+        <ion-col sizeXl="10">
+          <ion-item>
+            <ion-label position="floating" for="clientId">Klijent ID</ion-label>
+            <ion-input id="clientId" formControlName="clientId"></ion-input>
+          </ion-item>
+          <div *ngIf="editorForm.controls.clientId.invalid && submitted">
+            <ion-label color="danger">Potrebno je uneti ID klijenta</ion-label>
+          </div>
+        </ion-col>
+      </ion-row>
+
+      <ion-row class="ion-justify-content-center">
+        <ion-col sizeXl="10">
+          <ion-item>
+            <ion-label position="floating" for="name">Ime i Prezime</ion-label>
+            <ion-input id="name" formControlName="name"></ion-input>
+          </ion-item>
+          <div *ngIf="editorForm.controls.name.invalid && submitted">
+            <ion-label color="danger">Potrebno je uneti ime i prezime klijenta</ion-label>
+          </div>
+        </ion-col>
+      </ion-row>
+
+      <ion-row class="ion-justify-content-center">
+        <ion-col sizeXl="10">
+          <div class="form-group">
+            <ion-item>
+            <ion-label position="floating" for="email">Email</ion-label>
+            <ion-input type="email" formControlName="email"></ion-input>
+            </ion-item>
+          </div>
+        </ion-col>
+      </ion-row>
+
+      <ion-row class="ion-justify-content-center">
+        <ion-col sizeXl="10">
+          <ion-item>
+            <ion-label position="floating" for="address">Adresa</ion-label>
+            <ion-input id="address" formControlName="address"></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+
+      <ion-row class="ion-justify-content-center">
+        <ion-col sizeXl="10">
+          <ion-item>
+            <ion-label position="floating" for="city">Grad</ion-label>
+            <ion-input id="city" formControlName="city"></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+
+      <ion-row class="ion-justify-content-center">
+        <ion-col sizeXl="10">
+          <ion-item>
+            <ion-label position="floating" for="phoneNumber">Broj telefona</ion-label>
+            <ion-input id="phoneNumber" formControlName="phoneNumber" ></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+
+      <ion-row class="ion-justify-content-center ion-margin-vertical">
+        <ion-button type="submit" color="primary" *ngIf="!loading">{{ (client ? 'Sačuvaj' : 'Dodaj') }}</ion-button>
+        <ion-spinner *ngIf="loading" color="primary" name="circles"></ion-spinner>
+      </ion-row>
+
+    </ion-grid>
+  </form>
+</ion-content>

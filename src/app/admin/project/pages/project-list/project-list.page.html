@@ -1,0 +1,108 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Projekti</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-grid>
+
+    <ion-row class="ion-justify-content-between" >
+
+      <ion-col
+        *ngIf="paginationConfig.total !== undefined"
+        sizeXl="3" sizeLg="4" sizeMd="5" sizeSm="6" sizeXs="12">
+        <ion-item  lines="none">
+          <ion-chip color="primary" >Ukupno projekta: {{ paginationConfig.total }}</ion-chip>
+        </ion-item>
+      </ion-col>
+
+      <ion-col sizeXl="2" sizeLg="4" sizeMd="4" sizeSm="6" sizeXs="12">
+        <ion-button (click)="openEditor()" button class="ion-margin-start">
+          Dodaj projekat
+        </ion-button>
+      </ion-col>
+
+    </ion-row>
+
+    <form [formGroup]="filter" *ngIf="filter">
+      <ion-row class="ion-padding">
+
+        <ion-col sizeXl="6" sizeLg="12" sizeMd="12" sizeMd="12" sizeXs="12">
+          <ion-item>
+            <ion-input placeholder="Ukucajte naziv projekta ili ID klijenta..." formControlName="name"></ion-input>
+          </ion-item>
+        </ion-col>
+        <ion-col sizeXl="6" sizeLg="12" sizeMd="12" sizeMd="12" sizeXs="12">
+          <ion-item>
+            <ion-label>Stanje</ion-label>
+            <ion-select interface="popover" formControlName="state" value="">
+              <ion-select-option value="">Izaberi</ion-select-option>
+              <ion-select-option value="U procesu">U procesu</ion-select-option>
+              <ion-select-option value="Realizovan">Realizovan</ion-select-option>
+              <ion-select-option value="Odložen">Odložen</ion-select-option>
+              <ion-select-option value="Odustao">Odustao</ion-select-option>
+              <ion-select-option value="Nije završen">Nije završen</ion-select-option>
+            </ion-select>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+    </form>
+
+    <ng-container *ngIf="!loading">
+
+      <ion-row *ngFor="let project of projects; index as i" >
+
+        <ion-col routerLink="/admin/projekti/{{ project.id }}">
+          <ion-item button>
+            <ion-chip color="primary">{{ paginationConfig.pageSize * paginationConfig.pageIndex + i + 1}}</ion-chip>
+            <ion-label>
+              <h2> <strong>Projekat: </strong> {{ project.title }}</h2>
+              <ion-note><strong>Korisnik:</strong> {{project.client.name }}</ion-note>
+              <br/>
+              <ion-note><strong>Status:</strong> {{project.state}}</ion-note>
+            </ion-label>
+            <ion-label slot=end>
+              <ion-note>
+                <ion-icon *ngIf="project.stateIcon" [name]="project.stateIcon.name" [color]="project.stateIcon.color" size="large"></ion-icon>
+              </ion-note>
+            </ion-label>
+          </ion-item>
+        </ion-col>
+
+      </ion-row>
+
+    </ng-container>
+
+    <ion-row *ngIf="!loading && paginationConfig.total !== undefined && paginationConfig.total === 0" style="padding-top: 100px;">
+      <ion-col class="ion-text-center">
+        <h1>Trenutno nema dodatih projekta!</h1>
+      </ion-col>
+    </ion-row>
+
+    <ion-row *ngIf="loading">
+      <ion-col class="ion-text-center">
+        <ion-spinner  color="primary"></ion-spinner>
+      </ion-col>
+    </ion-row>
+
+    <ion-row>
+
+      <ion-col class="ion-text-center">
+
+        <ion-icon name="chevron-back-outline" class="pointer ion-padding" *ngIf="paginationConfig.pageIndex > 0" (click)="changePage(false)"></ion-icon>
+        <ion-icon
+          *ngIf="paginationConfig.total / (paginationConfig.pageIndex + 1) > paginationConfig.pageSize"
+          (click)="changePage(true)"
+          name="chevron-forward-outline"
+          class="pointer ion-padding">
+        </ion-icon>
+      </ion-col>
+
+    </ion-row>
+
+  </ion-grid>
+</ion-content>

@@ -1,0 +1,76 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-icon  name="arrow-back-outline" slot="start" size="large" class="pointer ion-padding-start" (click)="prev()">  </ion-icon>
+    <ion-title class="ion-text-center ion-margin-vertical">
+      {{ (isUpdate ? 'Izmeni' : 'Dodaj') }} kolegu
+    </ion-title>
+    <ion-icon size="large" class="ion-padding pointer" slot="end" (click)="dismiss()" name="close-outline"></ion-icon>
+  </ion-toolbar>
+</ion-header>
+
+
+<ion-content [fullscreen]="true" style="height: 400px;">
+
+  <form>
+    <ion-grid>
+
+      <ion-row class="ion-justify-content-end">
+        <ion-col  *ngIf="isCoworkerPicked"  sizeXl="5">
+          <ion-button (click)="doneWithChanges()" size="default" color="light">Zavrsi sa izmenama</ion-button>
+        </ion-col>
+        <ion-col sizeXl="6">
+          <ion-button (click)="doesntHaveCoworker()" size="default" color="primary">
+            Nemam kolegu na zadatku
+            <ion-icon name="chevron-forward-outline"></ion-icon>
+          </ion-button>
+        </ion-col>
+      </ion-row>
+
+      <ion-row *ngIf="filter">
+        <ion-col>
+          <ion-item>
+            <ion-input [formControl]="filter" placeholder="Dodaj kolegu..."></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+
+      <ng-container *ngIf="!loading && pickerPaginationConfig.total !== undefined && pickerPaginationConfig.total > 0">
+
+        <ion-item *ngFor="let user of users" button (click)="addUser(user)">
+                    <ion-label > {{ user.name + ' ' + user.surname }} </ion-label>
+        </ion-item>
+
+        <ion-row>
+          <ion-col class="ion-text-center">
+            <ion-icon name="chevron-back-outline" class="pointer ion-padding" *ngIf="pickerPaginationConfig.pageIndex > 0" (click)="changePage(false)">
+
+            </ion-icon>
+            <ion-icon
+              *ngIf="pickerPaginationConfig.total / (pickerPaginationConfig.pageIndex + 1) > pickerPaginationConfig.pageSize"
+              (click)="changePage(true)"
+              name="chevron-forward-outline"
+              class="pointer ion-padding"></ion-icon>
+          </ion-col>
+        </ion-row>
+
+      </ng-container>
+
+
+
+      <ion-row *ngIf="loading">
+        <ion-col>
+          <ion-spinner  color="primary"></ion-spinner>
+        </ion-col>
+      </ion-row>
+
+      <ion-row *ngIf="!loading && pickerPaginationConfig !== undefined && pickerPaginationConfig.total === 0">
+        <ion-col>
+          <ion-item>
+            <ion-label>Ne postoji!</ion-label>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+
+     </ion-grid>
+  </form>
+</ion-content>

@@ -1,0 +1,34 @@
+<ion-row  class="ion-wrap ion-no-padding">
+  <ion-col sizeXl="8" sizeMd="10" sizeSm="12" sizeXs="12" class="ion-no-padding">
+    <ion-row class="ion-justify-content-start">
+      <ion-col sizeXl="2.6" sizeMd="4" sizeXs="12" class="ion-padding-end" *ngIf="projectState === 'U procesu' " >
+        <ion-item lines="none"  >
+          <ion-button (click)="addPdfFile()" color="danger" size="default">Dodaj PDF
+            <ion-icon slot="end" name="cloud-upload-outline"></ion-icon>
+          </ion-button>
+
+        </ion-item>
+      </ion-col>
+      <ion-col sizeXl="2" sizeMd="4" *ngIf=" loading ">
+        <ion-spinner class="project-detail-spinner"></ion-spinner>
+      </ion-col>
+      <ion-col sizeXl="2" sizeMd="4" *ngIf=" !loading " >
+        <ion-item [lines]=" pdfFile ? true : 'none' ">
+          <input type="file" id="pdfFileUpload" #pdfFileUpload accept=".pdf,application/" hidden/>
+          <ion-input  *ngIf="pdfFile">{{pdfFile.name}}</ion-input>
+        </ion-item>
+        <div class="ion-padding-start" *ngIf=" pdfFileError.length > 0 ">
+          <ion-label color="danger">{{pdfFileError}}</ion-label>
+        </div>
+      </ion-col>
+      <ion-col sizeXl="3" sizeMd="4" class="ion-padding-none" *ngIf="!loading">
+        <ion-item lines="none" *ngIf="pdfFile">
+          <ion-icon size="large" class="pointer" name="cloud-download-outline"  (click)="downloadPdfFile()" color="danger" ></ion-icon>
+          <ion-icon  size="large" class="pointer ion-padding-start" alt="obriši" (click)="removePdfFile()" name="trash-outline"  color="danger" *ngIf="projectState === 'U procesu'" ></ion-icon>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+  </ion-col>
+</ion-row>
+
+

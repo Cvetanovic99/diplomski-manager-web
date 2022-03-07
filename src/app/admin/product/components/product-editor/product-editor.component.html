@@ -1,0 +1,96 @@
+<ion-content [fullscreen]="true">
+
+  <ion-header>
+    <ion-toolbar>
+      <ion-title class="ion-text-center ion-margin-vertical">
+        {{ (product ? 'Izmeni' : 'Dodaj') }} proizvod
+      </ion-title>
+      <ion-icon size="large" class="ion-padding pointer" slot="end" (click)="dismiss()" name="close-outline"></ion-icon>
+    </ion-toolbar>
+  </ion-header>
+
+  <form [formGroup]="editorForm" (ngSubmit)="onSubmit()" *ngIf="editorFormActive">
+
+      <ion-grid >
+
+
+      <ion-row class="ion-justify-content-center">
+        <ion-col sizeXl="10">
+          <ion-item>
+            <ion-label position="floating" for="name">Naziv proizvoda</ion-label>
+            <ion-input id="name" formControlName="name"></ion-input>
+          </ion-item>
+          <div *ngIf="editorForm.controls.name.invalid && submitted">
+            <ion-label color="danger">Potrebno je uneti naziv proizvoda</ion-label>
+          </div>
+        </ion-col>
+      </ion-row>
+
+      <ion-row class="ion-justify-content-center">
+        <ion-col sizeXl="10">
+          <ion-item>
+            SN
+            <ion-checkbox (click)="hasSnChengeHandler()" slot="end" id="hasSN" formControlName="hasSN"></ion-checkbox>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+
+      <ion-row class="ion-justify-content-center">
+        <ion-col sizeXl="10">
+          <ion-item>
+            <ion-label position="floating" for="model">Model</ion-label>
+            <ion-input id="model" formControlName="model"></ion-input>
+          </ion-item>
+          <div *ngIf="editorForm.controls.model.invalid && submitted">
+            <ion-label color="danger">Potrebno je uneti model proizvoda</ion-label>
+          </div>
+        </ion-col>
+      </ion-row>
+
+      <ion-row class="ion-justify-content-center">
+        <ion-col sizeXl="10">
+          <ion-item>
+            <ion-label>Merna jedinica</ion-label>
+            <ion-select value="m" interface="popover"  formControlName="unit">
+              <ion-select-option value="m">Metar</ion-select-option>
+              <ion-select-option value="kom">Komad</ion-select-option>
+            </ion-select>
+          </ion-item>
+          <div *ngIf="editorForm.controls.unit.invalid && submitted">
+            <ion-label color="danger">Potrebno je mernu jedinicu proizvoda</ion-label>
+          </div>
+        </ion-col>
+      </ion-row>
+
+      <ion-row class="ion-justify-content-center">
+        <ion-col sizeXl="10">
+          <ion-item>
+            <ion-label position="floating" for="manufacturer">Proizvođač</ion-label>
+            <ion-input id="manufacturer" formControlName="manufacturer"></ion-input>
+          </ion-item>
+          <div *ngIf="editorForm.controls.manufacturer.invalid && submitted">
+            <ion-label color="danger">Potrebno je uneti proizvođača</ion-label>
+          </div>
+        </ion-col>
+      </ion-row>
+
+      <ion-row class="ion-justify-content-center">
+        <ion-col sizeXl="10">
+          <ion-item>
+            <ion-label position="floating" for="supplier">Dobavljač</ion-label>
+            <ion-input id="supplier" formControlName="supplier"></ion-input>
+          </ion-item>
+          <div *ngIf="editorForm.controls.supplier.invalid && submitted">
+            <ion-label color="danger">Potrebno je uneti dobavljača</ion-label>
+          </div>
+        </ion-col>
+      </ion-row>
+
+      <ion-row class="ion-justify-content-center ion-margin-vertical">
+        <ion-button type="submit" color="primary" *ngIf="!loading">{{ (product ? 'Sačuvaj' : 'Dodaj') }}</ion-button>
+        <ion-spinner *ngIf="loading" color="primary" name="circles"></ion-spinner>
+      </ion-row>
+
+    </ion-grid>
+  </form>
+</ion-content>
