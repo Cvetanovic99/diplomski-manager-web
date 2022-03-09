@@ -63,7 +63,8 @@ export class ProfilePage {
       id: [this.user ? this.user.id : '', Validators.required],
       name: [this.user ?this.user.name: '', Validators.required],
       surname: [this.user ? this.user.surname : '', Validators.required],
-      email: [this.user ? this.user.email : '', Validators.required]
+      email: [this.user ? this.user.email : '', Validators.required],
+      tools: [this.user ? this.user.tools : '']
     });
 
     this.dataEditorFormActive = true;

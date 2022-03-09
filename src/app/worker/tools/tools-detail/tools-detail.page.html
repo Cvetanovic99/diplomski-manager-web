@@ -8,7 +8,7 @@
 </ion-header>
 
  <ion-content>
-  <ion-grid *ngIf="this.user && this.user.tools.length>0 ">
+  <ion-grid *ngIf="this.user && this.user.tools && this.user.tools.length>0 ">
     <ion-row>
       <ion-col size="12">
         <form [formGroup]="editorForm" *ngIf="editorFormActive">
@@ -22,7 +22,7 @@
 </ion-content>
 
 <ion-content>
-  <ion-grid *ngIf="!this.user || (this.user?.tools && this.user.tools.length===0)" >
+  <ion-grid *ngIf="!this.user || this.user.tools" >
     <ion-row >
       <ion-col class="ion-text-center">
         <h1>Nemate dodati alat!</h1>
